@@ -332,13 +332,8 @@ public class FDTMC {
      */
     private Map<State, State> copyForInlining(FDTMC destination) {
         destination.variableName = this.getVariableName();
-
-        Map<State, State> statesMapping = destination.inlineStates(this);
-        destination.setInitialState(statesMapping.get(this.getInitialState()));
-        destination.setSuccessState(statesMapping.get(this.getSuccessState()));
-        destination.setErrorState(statesMapping.get(this.getErrorState()));
-
-        destination.inlineTransitions(this, statesMapping);
+    	Map<State, State> statesMapping = destination.inlineStates(this);
+    	setStatesMapping(destination, statesMapping);
         return statesMapping;
     }
 
@@ -349,15 +344,17 @@ public class FDTMC {
     private FDTMC copy() {
         FDTMC copied = new FDTMC();
         copied.variableName = this.getVariableName();
-
-        Map<State, State> statesMapping = copied.inlineStates(this);
-        copied.setInitialState(statesMapping.get(this.getInitialState()));
-        copied.setSuccessState(statesMapping.get(this.getSuccessState()));
-        copied.setErrorState(statesMapping.get(this.getErrorState()));
-
-        copied.inlineTransitions(this, statesMapping);
+    	Map<State, State> statesMapping = copied.inlineStates(this);
+    	setStatesMapping(copied, statesMapping);
         copied.inlineInterfaces(this, statesMapping);
         return copied;
+    }
+    
+    private void setStatesMapping(FDTMC fdtmc, Map<State, State> statesMapping) {
+        fdtmc.setInitialState(statesMapping.get(this.getInitialState()));
+        fdtmc.setSuccessState(statesMapping.get(this.getSuccessState()));
+        fdtmc.setErrorState(statesMapping.get(this.getErrorState()));
+        fdtmc.inlineTransitions(this, statesMapping);
     }
 
     /**
